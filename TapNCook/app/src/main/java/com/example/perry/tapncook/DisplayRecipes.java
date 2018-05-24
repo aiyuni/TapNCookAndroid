@@ -3,6 +3,7 @@ package com.example.perry.tapncook;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
@@ -52,6 +53,10 @@ public class DisplayRecipes extends AppCompatActivity {
     private TextView recipeName2;
     private TextView recipeName3;
 
+    private String recipeStringName1;
+    private String recipeStringName2;
+    private String recipeStringName3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +96,7 @@ public class DisplayRecipes extends AppCompatActivity {
         recipeName2 = findViewById(R.id.recipeName2);
         recipeName3 = findViewById(R.id.recipeName3);
 
+
         /*Attempts to make API call*/
         try {
             jsonArrayRequest = new JsonArrayRequest
@@ -127,6 +133,14 @@ public class DisplayRecipes extends AppCompatActivity {
                                 recipeID4 = idObject4.getString("id");
                                 JSONObject idObject5 = response.getJSONObject(4);
                                 recipeID5 = idObject5.getString("id"); */
+
+                                recipeStringName1 = recipeName1.getText().toString();
+                                recipeStringName2 = recipeName2.getText().toString();
+                                recipeStringName3 = recipeName3.getText().toString();
+
+                                recipeName1.setMovementMethod(new ScrollingMovementMethod());
+                                recipeName2.setMovementMethod(new ScrollingMovementMethod());
+                                recipeName3.setMovementMethod(new ScrollingMovementMethod());
 
                                 //Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(imageView);
                                 System.out.println("is this the image? " + idObject1.getString(("image")));
@@ -183,7 +197,7 @@ public class DisplayRecipes extends AppCompatActivity {
                 Intent intent = new Intent(displayRecipes, displayRecipeInfo.class);
                 intent.putExtra("id", recipeID1);
                 intent.putExtra("image", recipeImageUrl1);
-                intent.putExtra("name", recipeName1.getText());
+                intent.putExtra("name", recipeStringName1);
                 startActivity(intent);
             }
         };
@@ -194,7 +208,7 @@ public class DisplayRecipes extends AppCompatActivity {
                 Intent intent = new Intent(displayRecipes, displayRecipeInfo.class);
                 intent.putExtra("id", recipeID2);
                 intent.putExtra("image", recipeImageUrl2);
-                intent.putExtra("name", recipeName2.getText());
+                intent.putExtra("name", recipeStringName2);
                 startActivity(intent);
             }
         };
@@ -205,7 +219,7 @@ public class DisplayRecipes extends AppCompatActivity {
                 Intent intent = new Intent(displayRecipes, displayRecipeInfo.class);
                 intent.putExtra("id", recipeID3);
                 intent.putExtra("image", recipeImageUrl3);
-                intent.putExtra("name", recipeName3.getText());
+                intent.putExtra("name", recipeStringName3);
                 startActivity(intent);
             }
         };

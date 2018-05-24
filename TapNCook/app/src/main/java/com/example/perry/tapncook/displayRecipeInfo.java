@@ -3,6 +3,7 @@ package com.example.perry.tapncook;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -60,6 +61,7 @@ public class displayRecipeInfo extends AppCompatActivity {
         stepsText = findViewById(R.id.instructions);
 
         title.setText(recipeName);
+        System.out.println("HELLO: " + recipeName);
         Picasso.get().load(imageURL).into(image);
 
         /*Obtain the custom request URL based on the recipe ID*/
@@ -86,50 +88,76 @@ public class displayRecipeInfo extends AppCompatActivity {
                         System.out.println("testString: " + testString);
 
                         try{
-                            JSONObject mainObject = response.getJSONObject(0);
-                            System.out.println("testObject is: " + mainObject.getString("steps"));
-                            JSONArray stepsArray = new JSONArray(mainObject.getString("steps"));
-                            JSONObject stepsObject = stepsArray.getJSONObject(0);
-                            System.out.println("inside stepsObject is: " + stepsObject.getString("step"));
+                           // JSONObject mainObject = response.getJSONObject(0);
+                           // System.out.println("testObject is: " + mainObject.getString("steps"));
+                           // JSONArray stepsArray = new JSONArray(mainObject.getString("steps"));
+                           // JSONObject stepsObject = stepsArray.getJSONObject(0);
+                           // System.out.println("inside stepsObject is: " + stepsObject.getString("step"));
 
                             //to get ingredients, need to go inside stepsObject!*/
-                            JSONArray ingredientsArray = new JSONArray(stepsObject.getString("ingredients"));
-                            JSONObject ingredientsObject = ingredientsArray.getJSONObject(0);
-                            System.out.println("inside ingredientsObject is: " + ingredientsObject.getString("name"));
+                           // JSONArray ingredientsArray = new JSONArray(stepsObject.getString("ingredients"));
+                          //  JSONObject ingredientsObject = ingredientsArray.getJSONObject(0);
+                            //System.out.println("inside ingredientsObject is: " + ingredientsObject.getString("name"));
 
                             /*Appends each ingredient to the ingredientsList string*/
                             JSONObject ingredient;
-                            for (int i = 0; i < ingredientsArray.length(); i++){
-                                ingredient = ingredientsArray.getJSONObject(i);
 
-                                if (ingredientsList.toString().contains(ingredient.getString("name"))){
-                                   System.out.println("Duplicate ingredient");
+                            //Check if response is empty array
+                            if (response.length() < 1){
+                                ingredientsText.setText("Sorry, no ingredients information are provided.");
+                                stepsText.setText("Sorry, no recipe information are provided.");
+                            }
+                            //if response is not empty array, add ingredients and recipe data
+                            else {
+                                JSONObject mainObject = response.getJSONObject(0);
+                                JSONArray stepsArray = new JSONArray(mainObject.getString("steps"));
+
+                                /*Adds the ingredients, while checking for duplicates*/
+                                for (int i = 0; i < stepsArray.length(); i++) {
+                                    JSONObject stepsObject = stepsArray.getJSONObject(i);
+                                    System.out.println("Stepobject:" + stepsObject);
+                                    JSONArray ingredientsArray = new JSONArray(stepsObject.getString("ingredients"));
+                                    System.out.println("ingredientsArray: " + ingredientsArray);
+                                    if (!(ingredientsArray.length() < 1)) {
+                                        for (int j = 0 ; j < ingredientsArray.length(); j++) {
+                                            ingredient = ingredientsArray.getJSONObject(j);
+                                            System.out.println("ingredient: " + ingredient);
+                                            if (ingredientsList.toString().contains(ingredient.getString("name"))) {
+                                                System.out.println("Duplicate ingredient");
+                                            } else {
+                                                ingredientsList.append(ingredient.getString("name"));
+                                                ingredientsList.append(", ");
+                                            }
+                                        }
+                                    }
+                                }
+                                if (ingredientsList.length() == 0){
+                                    ingredientsList.append("No ingredient information are provided.");
                                 }
                                 else {
-                                    ingredientsList.append(ingredient.getString("name"));
+                                    ingredientsList.deleteCharAt(ingredientsList.length()-2);
                                 }
-                                if (i < ingredientsArray.length() - 1){
-                                    ingredientsList.append(", ");
+
+                                /*Adds the steps.*/
+                                JSONObject step;
+                                for (int i = 0; i < stepsArray.length(); i++) {
+                                    step = stepsArray.getJSONObject(i);
+                                    stepsList.add("Step " + (i + 1) + ": " + step.getString("step"));
+                                }
+
+                                System.out.println("ingredientsList is : " + ingredientsList);
+                                System.out.println("stepsList is: " + stepsList);
+
+                                //Updates the ingredients ViewText
+                                ingredientsText.setText(ingredientsList);
+
+                                //Updates the instructions ViewText
+                                for (int i = 0; i < stepsList.size(); i++) {
+                                    stepsText.append(stepsList.get(i));
+                                    stepsText.append("\n \n");
                                 }
                             }
-
-                            JSONObject step;
-                            for (int i = 0; i < stepsArray.length(); i++){
-                                step = stepsArray.getJSONObject(i);
-                                stepsList.add("Step " + i + 1 + ": " + step.getString("step"));
-                            }
-
-                            System.out.println("ingredientsList is : " + ingredientsList);
-                            System.out.println("stepsList is: " + stepsList);
-
-                            //Updates the ingredients ViewText
-                            ingredientsText.setText(ingredientsList);
-
-                            //Updates the instructions ViewText
-                            for (int i = 0; i<stepsList.size(); i++){
-                                stepsText.append(stepsList.get(i));
-                                stepsText.append("\n \n");
-                            }
+                            stepsText.setMovementMethod(new ScrollingMovementMethod()); //allows scrolling
 
                         }
                         catch (JSONException e) {

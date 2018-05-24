@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton veggieButton;
     private ImageButton meatButton;
     private ImageButton dairyButton;
+    private EditText search;
     private TextView textView;
     private TextView basket;
     private ArrayList<String> ingredientsList = new ArrayList<>();
@@ -64,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(mainActivity, DisplayRecipes.class);
                 String[] ingredientsArray = ingredientsList.toArray(new String[ingredientsList.size()]);
                 intent.putExtra("userInput", ingredientsArray);
+                ingredientsList.clear();
+                basket.setText("Basket: ");
                 startActivity(intent);
             }
         });
@@ -73,8 +77,23 @@ public class MainActivity extends AppCompatActivity {
         dairyButton = (ImageButton) findViewById(R.id.imageButton3);
         meatButton = (ImageButton) findViewById(R.id.imageButton4);
         basket = (TextView) findViewById(R.id.basketText);
+        search = findViewById(R.id.search);
 
         System.out.println("Fruit Button is: " + fruitButton);
+
+        search.setOnKeyListener(new View.OnKeyListener() {
+                                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                                        if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                                            basket.append(search.getText() + ", ");
+                                            Toast.makeText(MainActivity.this, search.getText() + " has been added to basket", Toast.LENGTH_LONG).show();
+                                            System.out.println(search.getText());
+                                            ingredientsList.add(search.getText().toString());
+                                            search.setText("");
+
+                                        }
+                                        return true;
+                                    }
+                                });
 
         View.OnClickListener pressedFruitButton = new View.OnClickListener() {
             public void onClick(View view){
@@ -88,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         System.out.println("Clicked on item: " + item.getTitle());
                         basket.append(item.getTitle() + ", ");
                         ingredientsList.add(item.getTitle().toString());
@@ -112,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         System.out.println("Clicked on item: " + item.getTitle());
                         basket.append(item.getTitle() + ", ");
                         ingredientsList.add(item.getTitle().toString());
@@ -136,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         System.out.println("Clicked on item: " + item.getTitle());
                         ingredientsList.add(item.getTitle().toString());
                         basket.append(item.getTitle() + ", ");
@@ -160,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         System.out.println("Clicked on item: " + item.getTitle());
                         basket.append(item.getTitle() + ", ");
                         ingredientsList.add(item.getTitle().toString());
@@ -178,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         meatButton.setOnClickListener(pressedMeatButton);
         dairyButton.setOnClickListener(pressedDairyButton);
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        /*RequestQueue requestQueue = Volley.newRequestQueue(this);
         Map<String,String> params=new HashMap<String,String>();
         params.put("X-Mashape-Key","r8vXkqjsrjmsh2sYTcnFu4HIyAMGp14tqKvjsnQtsrvyKoKmmb");
         String url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/479101/information?includeNutrition=false";
@@ -231,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
         //System.out.println("Json body: " + jsonObjectRequest.getHeaders());
         requestQueue.add(jsonObjectRequest);
         System.out.println("requetqueue: " + requestQueue);
-
+        */
     }
 
     @Override
