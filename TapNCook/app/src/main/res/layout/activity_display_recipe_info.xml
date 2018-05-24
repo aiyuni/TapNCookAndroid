@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#7cffff"
-    tools:context="com.example.perry.tapncook.displayRecipeInfo">
+    tools:context="com.pl.perry.tapncook.displayRecipeInfo">
 
     <TextView
         android:id="@+id/recipeTitle"
@@ -41,6 +41,7 @@
         android:layout_width="390dp"
         android:layout_height="26dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="#FFA500"
         android:text="Ingredients"
