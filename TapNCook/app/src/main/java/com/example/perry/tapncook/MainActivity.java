@@ -1,10 +1,13 @@
 package com.example.perry.tapncook;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +17,23 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
 
     private EditText userInput;
@@ -22,20 +42,29 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton meatButton;
     private ImageButton dairyButton;
     private TextView textView;
+    private TextView basket;
+    private ArrayList<String> ingredientsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("bai", "hello");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        /*The email icon event*/
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final MainActivity mainActivity = this;
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                Intent intent = new Intent(mainActivity, DisplayRecipes.class);
+                String[] ingredientsArray = ingredientsList.toArray(new String[ingredientsList.size()]);
+                intent.putExtra("userInput", ingredientsArray);
+                startActivity(intent);
             }
         });
 
@@ -43,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         veggieButton = (ImageButton) findViewById(R.id.imageButton2);
         dairyButton = (ImageButton) findViewById(R.id.imageButton3);
         meatButton = (ImageButton) findViewById(R.id.imageButton4);
+        basket = (TextView) findViewById(R.id.basketText);
 
         System.out.println("Fruit Button is: " + fruitButton);
 
@@ -60,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem item) {
                         Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         System.out.println("Clicked on item: " + item.getTitle());
+                        basket.append(item.getTitle() + ", ");
+                        ingredientsList.add(item.getTitle().toString());
                         return true;
                     }
                 });
@@ -82,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem item) {
                         Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         System.out.println("Clicked on item: " + item.getTitle());
+                        basket.append(item.getTitle() + ", ");
+                        ingredientsList.add(item.getTitle().toString());
                         return true;
                     }
                 });
@@ -104,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem item) {
                         Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         System.out.println("Clicked on item: " + item.getTitle());
+                        ingredientsList.add(item.getTitle().toString());
+                        basket.append(item.getTitle() + ", ");
                         return true;
                     }
                 });
@@ -126,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem item) {
                         Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         System.out.println("Clicked on item: " + item.getTitle());
+                        basket.append(item.getTitle() + ", ");
+                        ingredientsList.add(item.getTitle().toString());
                         return true;
                     }
                 });
@@ -140,6 +178,59 @@ public class MainActivity extends AppCompatActivity {
         meatButton.setOnClickListener(pressedMeatButton);
         dairyButton.setOnClickListener(pressedDairyButton);
 
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        Map<String,String> params=new HashMap<String,String>();
+        params.put("X-Mashape-Key","r8vXkqjsrjmsh2sYTcnFu4HIyAMGp14tqKvjsnQtsrvyKoKmmb");
+        String url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/479101/information?includeNutrition=false";
+        params.put("Accept", "application/json");
+        System.out.println("params is: " + params);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, new JSONObject(params), new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response){
+                        //mTextView.setText("Response: " + response.toString());
+                        System.out.println("The response is: " + response.toString());
+                        Log.e("Rest response: " , response.toString());
+                        String testString = response.toString();
+                        System.out.println("testString: " + testString);
+
+                        try{
+                            JSONObject parser= new JSONObject(testString);
+                            String info = parser.getString("dairyFree");
+                            System.out.println("info is: " + info);
+                        }
+                        catch (JSONException e) {
+                            System.out.println("exception while parsing");
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("ERROR", "Error occurred ", error);
+                        System.out.println("error: " + error);
+                        // TODO: Handle error
+
+                    }
+                }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("X-Mashape-Key", "r8vXkqjsrjmsh2sYTcnFu4HIyAMGp14tqKvjsnQtsrvyKoKmmb");
+                    headers.put("Accept", "application/json");
+                    System.out.println("headers is: " + headers);
+                    return headers;
+                }
+        };
+        System.out.println("JSON request object: " + jsonObjectRequest);
+        System.out.println("Json body: " + jsonObjectRequest.getBody());
+        System.out.println("Json response: " + jsonObjectRequest.toString());
+        //System.out.println("Json body: " + jsonObjectRequest.getHeaders());
+        requestQueue.add(jsonObjectRequest);
+        System.out.println("requetqueue: " + requestQueue);
 
     }
 

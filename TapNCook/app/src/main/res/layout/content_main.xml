@@ -72,5 +72,16 @@
         app:layout_constraintTop_toBottomOf="@+id/imageButton"
         app:srcCompat="@drawable/steak" />
 
+    <TextView
+        android:id="@+id/basketText"
+        android:layout_width="308dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Ingredients go here: "
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </android.support.constraint.ConstraintLayout>
