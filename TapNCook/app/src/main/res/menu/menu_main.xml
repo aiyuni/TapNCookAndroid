@@ -2,11 +2,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.pl.perry.tapncook.MainActivity">
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
 
         <item
             android:id="@+id/one"
@@ -14,11 +9,7 @@
 
         <item
             android:id="@+id/two"
-            android:title="More Stuff"/>
-
-        <item
-            android:id="@+id/three"
-            android:title="What to put here"/>
+            android:title="Preferences"/>
 
 </menu>
 

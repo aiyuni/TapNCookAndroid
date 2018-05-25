@@ -68,7 +68,13 @@ public class MainActivity extends AppCompatActivity {
         search.setOnKeyListener(new View.OnKeyListener() {
                                     public boolean onKey(View v, int keyCode, KeyEvent event) {
                                         if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                                            basket.append(search.getText() + ", ");
+                                            System.out.println("basket getText is:" + basket.getText());
+                                            if (!(basket.getText().toString().contains(search.getText()))){
+                                                basket.append(search.getText() + ", ");
+                                            }
+                                            else {
+                                                System.out.println("attempted to enter duplicate ingredient");
+                                            }
                                             Toast.makeText(MainActivity.this, search.getText() + " has been added to basket", Toast.LENGTH_LONG).show();
                                             System.out.println(search.getText());
                                             ingredientsList.add(search.getText().toString());
@@ -93,7 +99,13 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem item) {
                         //Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         System.out.println("Clicked on item: " + item.getTitle());
-                        basket.append(item.getTitle() + ", ");
+                        if (!(basket.getText().toString().contains(item.getTitle()))){
+                            basket.append(item.getTitle() + ", ");
+                        }
+                        else {
+                            System.out.println("attempted to enter duplicate ingredient");
+                        }
+
                         ingredientsList.add(item.getTitle().toString());
                         return true;
                     }
@@ -117,7 +129,13 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem item) {
                         //Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         System.out.println("Clicked on item: " + item.getTitle());
-                        basket.append(item.getTitle() + ", ");
+                        if (!(basket.getText().toString().contains(item.getTitle()))){
+                            basket.append(item.getTitle() + ", ");
+                        }
+                        else {
+                            System.out.println("attempted to enter duplicate ingredient");
+                        }
+
                         ingredientsList.add(item.getTitle().toString());
                         return true;
                     }
@@ -142,7 +160,13 @@ public class MainActivity extends AppCompatActivity {
                         //Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         System.out.println("Clicked on item: " + item.getTitle());
                         ingredientsList.add(item.getTitle().toString());
-                        basket.append(item.getTitle() + ", ");
+                        if (!(basket.getText().toString().contains(item.getTitle()))){
+                            basket.append(item.getTitle() + ", ");
+                        }
+                        else {
+                            System.out.println("attempted to enter duplicate ingredient");
+                        }
+
                         return true;
                     }
                 });
@@ -165,7 +189,13 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem item) {
                        // Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         System.out.println("Clicked on item: " + item.getTitle());
-                        basket.append(item.getTitle() + ", ");
+                        if (!(basket.getText().toString().contains(item.getTitle()))){
+                            basket.append(item.getTitle() + ", ");
+                        }
+                        else {
+                            System.out.println("attempted to enter duplicate ingredient");
+                        }
+
                         ingredientsList.add(item.getTitle().toString());
                         return true;
                     }
@@ -252,9 +282,9 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+      /*  if (id == R.id.action_settings) {
             return true;
-        }
+        } */
 
         return super.onOptionsItemSelected(item);
     }
